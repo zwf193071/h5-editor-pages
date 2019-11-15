@@ -20,5 +20,5 @@ yarn build
 yarn lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Thanks to
+* [quark-h5](https://github.com/huangwei9527/quark-h5)
