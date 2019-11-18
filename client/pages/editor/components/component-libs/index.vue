@@ -5,7 +5,14 @@
 </template>
 <script>
     import eleConfig from '../../ele-config';
-    
+    export default {
+        name: "component-libs",
+        data() {
+			return {
+				componentsList: eleConfig
+			}
+		}
+    }
 </script>
 <style lang="scss" scoped>
     .components-libs-wrapper {
