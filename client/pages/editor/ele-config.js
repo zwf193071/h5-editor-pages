@@ -3,7 +3,7 @@ export default [
         title: '基础组件',
         components: [
             {
-                elName: 'qk-text',
+                elName: 'he-text',
                 title: '文字',
                 icon: 'iconfont iconwenben',
                 // 每个组件设置props来展示哪些显示哪些编辑项

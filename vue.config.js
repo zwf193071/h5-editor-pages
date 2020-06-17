@@ -8,7 +8,7 @@ const fs = require('fs')
 let devServer = {
     proxy: { // 代理
         '/': {
-            target: 'http://localhost:4000',//设置你调用的接口域名和端口号 别忘了加http
+            target: 'http://localhost:8080',//设置你调用的接口域名和端口号 别忘了加http
             ws: false,
             changeOrigin: true,               // needed for virtual hosted sites
             pathRewrite: {},
@@ -28,14 +28,14 @@ module.exports = {
             filename: 'index.html' // 输出文件
         }
     },
-    // css: {
-    //     loaderOptions: {
-    //         sass: {
-    //             // @/ 是 src/ 的别名
-    //             data: fs.readFileSync(path.resolve(__dirname, `./client/common/styles/variables.scss`), 'utf-8') // 公共变量文件注入
-    //         }
-    //     }
-    // },
+    css: {
+        loaderOptions: {
+            sass: {
+                // @/ 是 src/ 的别名
+                data: fs.readFileSync(path.resolve(__dirname, `./client/common/styles/variables.scss`), 'utf-8') // 公共变量文件注入
+            }
+        }
+    },
     productionSourceMap: process.env.NODE_ENV !== 'production',
     // configureWebpack: config => {
     //     if (process.env.NODE_ENV === 'production') {
