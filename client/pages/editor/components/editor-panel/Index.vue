@@ -10,6 +10,8 @@
                         :uuid="item.uuid"
                         :defaultStyle="item.commonStyle"
                         :style="getCommonStyle(item.commonStyle)"
+                        @handleElementClick="handleElementClick(item.uuid)"
+                        @resize="handleElementResize"
                         :active="item.uuid === activeElementUUID">
                         <component :is="item.elName" class="element-on-edit-pane" v-bind="{...item.propsValue, value: item.value}"/>
                     </edit-shape>
@@ -57,11 +59,29 @@ export default {
 			])
     },
     methods: {
+        /**
+         * 元素被点击
+         * @param uuid
+         */
+        handleElementClick(uuid) {
+            this.$store.dispatch('setActiveElementUUID', uuid);
+        },
         handleClickCanvas(e) {
             if (!e.target.classList.contains('element-on-edit-pane') && !e.target.classList.contains('menu-item-on-edit-panel')) {
                 this.$store.dispatch('setActiveElementUUID', '');
             }
-        }
+        },
+        handleElementResize(pos) {
+            if (!pos) {
+                // this.$store.dispatch('addHistoryCache')
+                return;
+            }
+            this.projectData.pages[this.currentPageIndex].elements[this.activeElementIndex].commonStyle.left = pos.left
+            // 更新元素commonStyle
+            this.projectData.pages[this.currentPageIndex].elements[this.activeElementIndex].commonStyle = {
+                ...pos
+            }
+        },
     },
 }
 </script>

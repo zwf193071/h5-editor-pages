@@ -37,6 +37,8 @@ const actions = {
 	 */
     setActivePageUUID({ commit }, uuid) {
         commit('setActivePageUUID', uuid);
+        // 当前选中页面切换后清空元素选中的uuid
+        commit('setActiveElementUUID', '');
     },
     /**
 	 * 设置当前选中激活元素uuid
@@ -55,7 +57,7 @@ const actions = {
         let activePage = getters.activePage(state)
         let data = editorProjectConfig.getElementConfig(elData, { zIndex: activePage.elements.length + 1 })
         commit('addElement', data);
-        commit('setActiveElementUUID', data.uuid)
+        commit('setActiveElementUUID', data.uuid);
     },
     /**
 	 * 添加页面
@@ -94,6 +96,34 @@ const mutations = {
     }
 }
 const getters = {
+    /**
+	 * 当前选中的页面index
+	 * @param state
+	 * @returns {*}
+	 */
+    currentPageIndex(state) {
+        // 如果不存在页面返回-1
+        if (!state.projectData.pages) {
+            return -1;
+        }
+        return state.projectData.pages.findIndex(v => { return v.uuid === state.activePageUUID })
+    },
+    /**
+	 * 当前选中的页面index
+	 * @param state
+	 * @returns {*}
+	 */
+    activeElementIndex(state) {
+        // 如果不存在页面返回-1
+        if (!state.projectData.pages) {
+            return -1;
+        }
+        let currentPageIndex = state.projectData.pages.findIndex(v => { return v.uuid === state.activePageUUID })
+        if (currentPageIndex === -1) {
+            return -1;
+        }
+        return state.projectData.pages[currentPageIndex].elements.findIndex(v => { return v.uuid === state.activeElementUUID })
+    },
     /**
 	 * 当前选中的页面
 	 */
