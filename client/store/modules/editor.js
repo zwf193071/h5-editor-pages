@@ -1,3 +1,4 @@
+import { merge } from 'lodash'
 import editorProjectConfig from '@client/pages/editor/DataModel'
 /**
  * 编辑器数据状态存储
@@ -60,6 +61,35 @@ const actions = {
         commit('setActiveElementUUID', data.uuid);
     },
     /**
+	 * 元素指令， 用于结束针对元素修改相关指令，再由此方法派发actions做具体修改
+	 * @param dispatch
+	 * @param type
+	 * @param data
+	 */
+    elementCommand({ commit, dispatch, state }, command) {
+        let elData = getters.activeElement(state)
+        switch (command) {
+            case 'copy':
+                console.log(commit);
+                dispatch('copyElement', elData)
+                break;
+            case 'delete':
+                dispatch('deleteElement', elData.uuid)
+                break;
+            case 'fontA+':
+                dispatch('resetElementCommonStyle', { fontSize: elData.commonStyle.fontSize + 1 })
+                break;
+            case 'fontA-':
+                dispatch('resetElementCommonStyle', { fontSize: elData.commonStyle.fontSize - 1 })
+                break;
+            case 'fontB':
+                dispatch('resetElementCommonStyle', { fontWeight: elData.commonStyle.fontWeight === 'bold' ? 'normal' : 'bold' })
+                break;
+            default:
+                break;
+        }
+    },
+    /**
 	 * 添加页面
 	 * @param commit
 	 */
@@ -72,7 +102,23 @@ const actions = {
             index = state.projectData.pages.length - 1;
         }
         commit('insertPage', data, index);
-        commit('addHistoryCache')
+    },
+    resetElementCommonStyle({ commit }, style) {
+        commit('resetElementCommonStyle', style)
+    },
+    deleteElement({ state, commit }, uuid) {
+        // 如果删除选中元素则取消元素选中
+        if (uuid === state.activeElementUUID) {
+            commit('setActiveElementUUID', '')
+        }
+        commit('deleteElement', uuid)
+    },
+    copyElement({ state, commit }, elData) {
+        let copyOrignData = elData ? elData : getters.activeElement(state)
+        let activePage = getters.activePage(state)
+        let data = editorProjectConfig.copyElement(copyOrignData, { zIndex: activePage.elements.length + 1 })
+        commit('addElement', data);
+        commit('setActiveElementUUID', data.uuid)
     }
 }
 const mutations = {
@@ -93,7 +139,27 @@ const mutations = {
     addElement(state, elData) {
         let index = state.projectData.pages.findIndex(v => { return v.uuid === state.activePageUUID })
         state.projectData.pages[index].elements.push(elData);
-    }
+    },
+    /**
+	 * 重置元素样式，
+	 * @param commit
+	 * @param uuid
+	 * @param styleObject
+	 */
+    resetElementCommonStyle(state, style) {
+        let activeElement = getters.activeElement(state)
+        activeElement.commonStyle = merge(activeElement.commonStyle, style)
+    },
+    /**
+	 * 往画板删除元素
+	 * @param state
+	 * @param elData  activeElementIndex
+	 */
+    deleteElement(state, uuid) {
+        let activePage = getters.activePage(state)
+        let elementIndex = activePage.elements.findIndex(v => { return v.uuid === uuid })
+        activePage.elements.splice(elementIndex, 1)
+    },
 }
 const getters = {
     /**

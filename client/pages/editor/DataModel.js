@@ -95,6 +95,15 @@ let getElementConfig = function (element, extendStyle = {}) {
     config.isForm = !!element.isForm;
     return config;
 }
+let copyElement = function (element, extendStyle = {}) {
+    element = cloneDeep(element)
+    element.uuid = createUUID();
+    element.commonStyle = merge(element.commonStyle, extendStyle)
+    // 加上一点偏移量，以作区分
+    element.commonStyle.top = element.commonStyle.top + 10
+    element.commonStyle.left = element.commonStyle.left + 10
+    return element
+}
 let getProjectConfig = function () {
     let project = cloneDeep(projectConfig)
     let onePage = getPageConfig()
@@ -126,6 +135,7 @@ let getCommonStyle = function (styleObj, scalingRatio = 1) {
 export default {
     elementConfig,
     getElementConfig,
+    copyElement,
     getPageConfig,
     getProjectConfig,
     getCommonStyle
