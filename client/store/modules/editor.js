@@ -1,4 +1,4 @@
-import { merge } from 'lodash'
+import { cloneDeep, merge } from 'lodash'
 import editorProjectConfig from '@client/pages/editor/DataModel'
 /**
  * 编辑器数据状态存储
@@ -11,7 +11,10 @@ const state = {
     // 当前正在编辑的页面uuid
     activePageUUID: '',
     // 画板中选中的元素uuid
-    activeElementUUID: ''
+    activeElementUUID: '',
+    // 历史操作数据用于undo
+    historyCache: [],
+    currentHistoryIndex: -1
 }
 const actions = {
     /**
@@ -59,6 +62,7 @@ const actions = {
         let data = editorProjectConfig.getElementConfig(elData, { zIndex: activePage.elements.length + 1 })
         commit('addElement', data);
         commit('setActiveElementUUID', data.uuid);
+        commit('addHistoryCache');
     },
     /**
 	 * 元素指令， 用于结束针对元素修改相关指令，再由此方法派发actions做具体修改
@@ -102,6 +106,7 @@ const actions = {
             index = state.projectData.pages.length - 1;
         }
         commit('insertPage', data, index);
+        commit('addHistoryCache');
     },
     resetElementCommonStyle({ commit }, style) {
         commit('resetElementCommonStyle', style)
@@ -111,14 +116,27 @@ const actions = {
         if (uuid === state.activeElementUUID) {
             commit('setActiveElementUUID', '')
         }
-        commit('deleteElement', uuid)
+        commit('deleteElement', uuid);
+        commit('addHistoryCache');
     },
     copyElement({ state, commit }, elData) {
         let copyOrignData = elData ? elData : getters.activeElement(state)
         let activePage = getters.activePage(state)
         let data = editorProjectConfig.copyElement(copyOrignData, { zIndex: activePage.elements.length + 1 })
         commit('addElement', data);
-        commit('setActiveElementUUID', data.uuid)
+        commit('setActiveElementUUID', data.uuid);
+        commit('addHistoryCache');
+    },
+    editorUndo({ commit, state }) {
+        if (!getters.canUndo(state)) {
+            return;
+        }
+        const prevState = state.historyCache[state.currentHistoryIndex - 1]
+        commit('relapceEditorState', cloneDeep(prevState))
+        commit('editorUndo')
+    },
+    addHistoryCache({ commit }) {
+        commit('addHistoryCache')
     }
 }
 const mutations = {
@@ -160,6 +178,40 @@ const mutations = {
         let elementIndex = activePage.elements.findIndex(v => { return v.uuid === uuid })
         activePage.elements.splice(elementIndex, 1)
     },
+    /**
+	 * 新增一条历史纪录
+	 * @param state
+	 */
+    addHistoryCache(state) {
+        if (state.currentHistoryIndex + 1 < state.historyCache.length) {
+            state.historyCache.splice(state.currentHistoryIndex + 1)
+        }
+        state.historyCache.push({
+            projectData: cloneDeep(state.projectData),
+            activePageUUID: state.activePageUUID,
+            activeElementUUID: state.activeElementUUID
+        })
+        // 限制undo 纪录步数，最多支持100步操作undo
+        state.historyCache.splice(100)
+        state.currentHistoryIndex++
+    },
+	/**
+	 *
+	 * @param state
+	 */
+    editorUndo(state) {
+        state.currentHistoryIndex--
+    },
+    /**
+	 * 更新编辑器项目数据，从history中拿数据替换
+	 * @param state
+	 * @param data
+	 */
+    relapceEditorState(state, data) {
+        state.projectData = cloneDeep(data.projectData)
+        state.activePageUUID = data.activePageUUID
+        state.activeElementUUID = data.activeElementUUID
+    }
 }
 const getters = {
     /**
@@ -213,6 +265,9 @@ const getters = {
             return { commonStyle: {}, propsValue: {} };
         }
         return state.projectData.pages[currentPageIndex].elements.find(v => { return v.uuid === state.activeElementUUID })
+    },
+    canUndo(state) {
+        return state.currentHistoryIndex > 0
     }
 }
 export default {

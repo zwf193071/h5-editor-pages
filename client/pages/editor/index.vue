@@ -3,8 +3,12 @@
         <div class="editor-page-edit-wrapper">
             <componentLibs v-if="activeSideBar === 'componentLibs'"/>
         </div>
+        <!--页面编辑区域-->
         <div class="editor-main">
-            <editorPanel />
+            <div class="control-bar-wrapper">
+                <controlBar :scale.sync="canvasConfig.scale"/>
+            </div>
+            <editorPanel :scale.sync="canvasConfig.scale"/>
         </div>
         <div class="el-attr-edit-wrapper">
             <el-tabs v-model="activeAttr" stretch>
@@ -20,17 +24,22 @@ import componentLibs from './components/component-libs/Index'
 import editorPanel from './components/editor-panel/Index'
 
 import attrEdit from './components/attr-configure/attr-edit'
+import controlBar from './components/control-bar'
 
 export default {
     components: {
         componentLibs,
         editorPanel,
-        attrEdit
+        attrEdit,
+        controlBar
     },
     data() {
         return {
             activeAttr: '属性',
-            activeSideBar: 'componentLibs'
+            activeSideBar: 'componentLibs',
+            canvasConfig: {
+                scale: 1
+            }
         }
     },
     created() {
@@ -53,28 +62,36 @@ export default {
         position: relative;
     }
     .el-attr-edit-wrapper {
-      width: 380px;
-      padding: 0;
+        width: 380px;
+        padding: 0;
     }
+}
+.control-bar-wrapper {
+    position: absolute;
+    top: -44px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 1000;
 }
 </style>
 <style lang="scss">
 .el-attr-edit-wrapper {
     .el-tabs {
-      height: 100%;
-      padding-left: 16px;
-      padding-right: 16px;
-      padding-bottom: 10px;
-    }
-    .el-tabs__content {
-      height: calc(100% - 55px);
-      & > div {
         height: 100%;
-      }
-      .attr-edit-inner {
         padding-left: 16px;
         padding-right: 16px;
-      }
+        padding-bottom: 10px;
+    }
+    .el-tabs__content {
+        height: calc(100% - 55px);
+        & > div {
+            height: 100%;
+        }
+        .attr-edit-inner {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
     }
 }
 </style>

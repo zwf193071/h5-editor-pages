@@ -80,17 +80,17 @@ export default {
 		[editShape.name]: editShape
     },
     computed: {
-			...mapState({
-				projectData: state => state.editor.projectData,
-                activePageUUID: state => state.editor.activePageUUID,
-                activeElementUUID: state => state.editor.activeElementUUID
-            }),
-			...mapGetters([
-				'currentPageIndex',
-				'activeElementIndex',
-				'activeElement',
-                'activePage'
-			])
+        ...mapState({
+            projectData: state => state.editor.projectData,
+            activePageUUID: state => state.editor.activePageUUID,
+            activeElementUUID: state => state.editor.activeElementUUID
+        }),
+        ...mapGetters([
+            'currentPageIndex',
+            'activeElementIndex',
+            'activeElement',
+            'activePage'
+        ])
     },
     methods: {
         /**
