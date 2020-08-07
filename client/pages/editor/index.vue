@@ -6,7 +6,10 @@
         <!--页面编辑区域-->
         <div class="editor-main">
             <div class="control-bar-wrapper">
-                <controlBar :scale.sync="canvasConfig.scale"/>
+                <controlBar
+                    :scale.sync="canvasConfig.scale"
+                    @showPreview="showPreviewFn"
+                />
             </div>
             <editorPanel :scale.sync="canvasConfig.scale"/>
         </div>
@@ -15,8 +18,19 @@
                 <el-tab-pane label="属性" name="属性">
                     <attrEdit></attrEdit>
                 </el-tab-pane>
+                <el-tab-pane label="事件" name="事件">
+                    <eventEdit></eventEdit>
+                </el-tab-pane>
+                <el-tab-pane label="JS脚本" name="脚本">
+                    <scriptEdit></scriptEdit>
+                </el-tab-pane>
             </el-tabs>
         </div>
+        <previewPage
+            v-if="showPreview"
+            :pageData="projectData"
+            :pageId="id"
+            @closePreview="showPreview = false"></previewPage>
     </div>
 </template>
 <script>
@@ -24,27 +38,50 @@ import componentLibs from './components/component-libs/Index'
 import editorPanel from './components/editor-panel/Index'
 
 import attrEdit from './components/attr-configure/attr-edit'
+import eventEdit from './components/attr-configure/event-edit'
+import scriptEdit from './components/attr-configure/script-edit'
 import controlBar from './components/control-bar'
+
+import previewPage from './components/preview'
+
+import {mapState} from 'vuex'
 
 export default {
     components: {
         componentLibs,
         editorPanel,
         attrEdit,
-        controlBar
+        eventEdit,
+        scriptEdit,
+        controlBar,
+        previewPage
     },
     data() {
         return {
+            id: '5f2d0abcc83a2e42e7f2c86a', // 当前页面id
             activeAttr: '属性',
             activeSideBar: 'componentLibs',
+            showPreview: false,
             canvasConfig: {
                 scale: 1
             }
         }
     },
+    computed: {
+        ...mapState({
+            projectData: state => state.editor.projectData
+        })
+    },
     created() {
         this.$store.dispatch('setPrjectData')
-    }
+    },
+    methods: {
+        async showPreviewFn() {
+            this.$axios.post('/page/update/' + this.id, this.projectData).then(() => {
+                this.showPreview = true
+            })
+        },
+    },
 }
 </script>
 <style lang="scss" scoped>

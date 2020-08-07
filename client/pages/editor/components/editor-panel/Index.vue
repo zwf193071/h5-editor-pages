@@ -25,7 +25,7 @@
                         placement="right"
                     >
                         <div class="menu-item menu-item-on-edit-panel" @click="handleElementCommand(item.value)">
-                        <i class="menu-item-on-edit-panel" :class="[item.icon]"></i>
+                            <i class="menu-item-on-edit-panel" :class="[item.icon]"></i>
                         </div>
                     </el-tooltip>
                 </div>

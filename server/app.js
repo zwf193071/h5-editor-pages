@@ -5,7 +5,7 @@ const path = require('path')
 const koaStatic = require('koa-static')
 const cors = require('koa2-cors');
 // const koajwt = require('koa-jwt')
-const jsonwebtoken = require('jsonwebtoken')
+// const jsonwebtoken = require('jsonwebtoken')
 const mongoConf = require('./config/mongo');
 const formatresponse = require('./middleware/formatresponse')
 const fs =  require('fs')
@@ -49,10 +49,10 @@ render(app, {
  */
 router.use(async (ctx,next)=>{
 	// token解密 将token里的用户信息赋值到全局变量中
-	let token = ctx.headers.authorization
-	if(token){
-		ctx.state.user = jsonwebtoken.verify(token.split(' ')[1], SECRET);
-	}
+	// let token = ctx.headers.authorization
+	// if(token){
+	// 	ctx.state.user = jsonwebtoken.verify(token.split(' ')[1], SECRET);
+	// }
 	// 全局变量
 	ctx.state.BASE_URL = $config.baseURL;
 	ctx.state.ROOT_PATH = path.join(__dirname, '../');

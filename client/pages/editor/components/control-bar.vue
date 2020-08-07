@@ -13,6 +13,10 @@
             <i class="iconfont iconundo1"></i>
             <p>撤销</p>
         </div>
+        <div class="button-item" @click="showPreview">
+            <i class="iconfont iconyulan"></i>
+            <p>预览</p>
+        </div>
     </div>
 </template>
 <script>
@@ -56,6 +60,9 @@ export default {
 
             this.$emit('update:scale', this.scaleValue)
         },
+		showPreview(){
+			this.$emit('showPreview')
+        }
     }
 }
 </script>

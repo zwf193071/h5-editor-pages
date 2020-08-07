@@ -137,7 +137,30 @@ const actions = {
     },
     addHistoryCache({ commit }) {
         commit('addHistoryCache')
-    }
+    },
+    /**
+	 * 添加事件
+	 * @param commit
+	 * @param type
+	 */
+    addElementEvent({ commit }, type) {
+        // 初始化数据
+        let eventDefaultData = {
+            type: type,
+            url: ''
+        }
+        commit('addElementEvent', eventDefaultData)
+        commit('addHistoryCache')
+    },
+    /**
+	 * 删除事件
+	 * @param commit
+	 * @param index
+	 */
+    deleteElementEvent({ commit }, index) {
+        commit('deleteElementEvent', index)
+        commit('addHistoryCache')
+    },
 }
 const mutations = {
     setPrjectData(state, data) {
@@ -211,6 +234,24 @@ const mutations = {
         state.projectData = cloneDeep(data.projectData)
         state.activePageUUID = data.activePageUUID
         state.activeElementUUID = data.activeElementUUID
+    },
+    /**
+	 * 添加事件
+	 * @param state
+	 * @param data
+	 */
+    addElementEvent(state, data) {
+        let activeElement = getters.activeElement(state)
+        activeElement.events.push(data)
+    },
+	/**
+	 * 删除事件
+	 * @param state
+	 * @param index
+	 */
+    deleteElementEvent(state, index) {
+        let activeElement = getters.activeElement(state)
+        activeElement.events.splice(index, 1)
     }
 }
 const getters = {
