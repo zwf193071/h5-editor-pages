@@ -58,7 +58,7 @@ export default {
     },
     data() {
         return {
-            id: '5f2d0abcc83a2e42e7f2c86a', // 当前页面id
+            id: '5f2d0abcc83a2e42e7f2c86c', // 当前页面id
             activeAttr: '属性',
             activeSideBar: 'componentLibs',
             showPreview: false,

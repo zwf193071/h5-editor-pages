@@ -11,7 +11,7 @@ const options = {
 // password 数据库密码
 // localhost 数据库ip
 // dbname 数据库名称
-const url = `mongodb://${config.db.user}:${config.db.pass}@${config.db.servername}:${config.db.port}/${config.db.DATABASE}`
+const url = `mongodb://${config.db.user}:${config.db.pass}@${config.db.servername}:${config.db.port}/${config.db.DATABASE}?authSource=${config.db.authSource}`
 
 module.exports = {
 	connect: ()=> {

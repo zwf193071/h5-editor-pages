@@ -5,8 +5,8 @@ const router = require('koa-router')()
 
 router.get('/view/:_id', async ctx => {
 	let _id = mongoose.mongo.ObjectId(ctx.params._id)
-	let page = await Page.findOne({ _id })
-	console.log(1111111)
+	let page = await Page.find({ _id })
+	console.log(11111);
 	console.log(page)
 	ctx.status = 201;
 	// todo 根据不同type渲染不同得模板引擎
@@ -17,11 +17,12 @@ router.get('/view/:_id', async ctx => {
  */
 router.post('/update/:_id', async ctx=> {
 	console.log(2222)
-	console.log(ctx.request)
 	let _id = mongoose.mongo.ObjectId(ctx.params._id)
 	let data = ctx.request.body
-	ctx.body = await Page.updateOne({ _id }, { $set: data }, {
-		runValidators: true
+	// console.log(data);
+	ctx.body = await Page.create({
+		_id,
+		...data
 	})
 })
 

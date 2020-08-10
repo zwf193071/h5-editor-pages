@@ -4,6 +4,7 @@ const router = require('koa-router')()
 const path = require('path')
 const koaStatic = require('koa-static')
 const cors = require('koa2-cors');
+const bodyParser = require('koa-bodyparser');
 // const koajwt = require('koa-jwt')
 // const jsonwebtoken = require('jsonwebtoken')
 const mongoConf = require('./config/mongo');
@@ -12,7 +13,7 @@ const fs =  require('fs')
 const $config = require("../config")
 
 const app = new Koa();
-const SECRET = 'quark'; // 加密参数
+const SECRET = 'h5editor'; // 加密参数
 
 //配置静态web
 app.use(koaStatic(__dirname + '/public'), { gzip: true, setHeaders: function(res){
@@ -58,7 +59,7 @@ router.use(async (ctx,next)=>{
 	ctx.state.ROOT_PATH = path.join(__dirname, '../');
 	ctx.state.SERVER_PATH = path.join(__dirname, './');
 	ctx.state.SECRET = SECRET;
-	await  next()
+	await next()
 })
 
 // 链接数据库
@@ -74,6 +75,7 @@ fs.readdirSync(path.join(__dirname,'./routes')).forEach(route=> {
 
 app.use(formatresponse);
 
+app.use(bodyParser());
 app.use(router.routes());   /*启动路由*/
 app.use(router.allowedMethods());
 
