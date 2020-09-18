@@ -1,5 +1,7 @@
 # h5-editor-pages
 
+- [在线预览地址](https://zwf193071.github.io/h5-editor-pages/)
+
 ## Project setup
 ```
 npm install
