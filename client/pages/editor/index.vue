@@ -34,7 +34,7 @@
     </div>
 </template>
 <script>
-import componentLibs from './components/component-libs/Index'
+import componentLibs from './components/component-libs/index'
 import editorPanel from './components/editor-panel/Index'
 
 import attrEdit from './components/attr-configure/attr-edit'

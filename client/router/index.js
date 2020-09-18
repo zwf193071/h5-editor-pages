@@ -7,7 +7,7 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: () => import('@/pages/editor/Index')
+    component: () => import('@/pages/editor/index')
   }
 ]
 
