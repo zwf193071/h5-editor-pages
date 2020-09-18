@@ -6,7 +6,7 @@
     "dev-client": "vue-cli-service serve",
     "dev-server": "node server/app.js",
     "dev": "npm run dev-client && npm run dev-server",
-    "build-client": "vue-cli-service build",
+    "build": "vue-cli-service build",
     "lib:h5-swiper": "vue-cli-service build --target lib --name h5-swiper --dest server/public/engine_libs/h5-swiper engine-template/engine-h5-swiper/index.js",
     "lint": "vue-cli-service lint"
   },

@@ -28,6 +28,7 @@ module.exports = {
             filename: 'index.html' // 输出文件
         }
     },
+    publicPath: './',
     css: {
         loaderOptions: {
             sass: {
